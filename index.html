@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
+    <title>Image2Diagram · 图片转可编辑图表</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">I<span>2</span>D</div>
+          <div>
+            <div class="brand-name">Image2Diagram</div>
+            <div class="brand-subtitle">图片 → 可编辑图表</div>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span class="status-pill"><i></i> 本地处理</span>
+          <a class="text-link" href="https://app.diagrams.net/" target="_blank" rel="noreferrer">打开 draw.io ↗</a>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <section class="intro-row">
+          <div>
+            <p class="eyebrow">IMAGE TO EDITABLE DIAGRAM</p>
+            <h1>把截图，变成可以继续修改的图表。</h1>
+            <p class="intro-copy">上传流程图、架构图或组织图，生成原生 draw.io 文件。识别引擎会提取节点、文字、颜色、布局和连接关系。</p>
+          </div>
+          <div class="feature-strip">
+            <div><strong>原生结构</strong><span>节点、文字、连线独立可编辑</span></div>
+            <div><strong>可回溯</strong><span>保留原图与转换记录</span></div>
+            <div><strong>批量</strong><span>一次最多处理 20 张</span></div>
+          </div>
+        </section>
+
+        <section class="upload-card" id="drop-zone">
+          <input id="file-input" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" multiple hidden />
+          <div class="upload-icon">↥</div>
+          <div class="upload-title">拖入图片，或选择文件</div>
+          <div class="upload-hint">支持 PNG / JPG / JPEG / WEBP · 单张或批量，最多 20 张</div>
+          <button class="primary-button" id="choose-button" type="button">选择图片</button>
+          <div class="calibration-note"><span>✦</span> 未嵌入任何输入样例，上传任意符合格式的图表即可验证</div>
+        </section>
+
+        <section class="settings-card">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="eyebrow">AI RECOGNITION</p>
+              <h2>识别引擎配置</h2>
+            </div>
+            <span class="result-caption">不配置时使用本地几何 fallback</span>
+          </div>
+          <div class="settings-grid">
+            <label><span>OpenAI-compatible VLM Endpoint</span><input id="ai-endpoint" type="url" placeholder="https://your-provider/v1/chat/completions" /></label>
+            <label><span>Model</span><input id="ai-model" type="text" placeholder="例如 qwen-vl-max / gpt-4o" /></label>
+            <label class="wide-field"><span>API Key（仅保存在当前浏览器）</span><input id="ai-api-key" type="password" placeholder="sk-..." /></label>
+          </div>
+          <div class="settings-footer"><button class="secondary-button compact" id="save-ai-settings" type="button">保存识别配置</button><span id="engine-status">当前：本地几何识别（文字准确率有限）</span><small>配置 VLM 后，图片会发送到你填写的 Endpoint。</small></div>
+        </section>
+
+        <section class="workbench hidden" id="workbench">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">CONVERSION QUEUE</p>
+              <h2>转换任务</h2>
+            </div>
+            <div class="toolbar-actions">
+              <button class="secondary-button" id="clear-button" type="button">清空</button>
+              <button class="primary-button compact" id="convert-button" type="button">开始转换 <span>→</span></button>
+            </div>
+          </div>
+
+          <div class="progress-wrap hidden" id="progress-wrap"><div class="progress-meta"><span id="progress-label">准备中…</span><span id="progress-value">0%</span></div><div class="progress-track"><div class="progress-bar" id="progress-bar"></div></div></div>
+
+          <div class="file-queue" id="file-queue"></div>
+
+          <div class="results-section hidden" id="results-section">
+            <div class="section-heading result-heading">
+              <div>
+                <p class="eyebrow">PREVIEW & EXPORT</p>
+                <h2>还原结果</h2>
+              </div>
+              <span class="result-caption" id="result-caption">可编辑结构已生成</span>
+            </div>
+            <div class="results-list" id="results-list"></div>
+          </div>
+        </section>
+
+        <section class="history-section hidden" id="history-section">
+          <div class="section-heading compact-heading"><div><p class="eyebrow">LOCAL HISTORY</p><h2>最近转换</h2></div><button class="text-action" id="clear-history" type="button">清除历史</button></div>
+          <div class="history-list" id="history-list"></div>
+        </section>
+
+        <section class="how-card">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="eyebrow">HOW IT WORKS</p>
+              <h2>三步完成图表复刻</h2>
+            </div>
+          </div>
+          <div class="steps">
+            <div class="step"><b>01</b><div><strong>上传图片</strong><span>拖入清晰的流程图或架构图</span></div></div>
+            <div class="step"><b>02</b><div><strong>结构化识别</strong><span>提取节点、文字、样式和拓扑</span></div></div>
+            <div class="step"><b>03</b><div><strong>下载编辑</strong><span>用 diagrams.net 继续修改</span></div></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">Image2Diagram · draw.io / PPTX / Mermaid 输出 · 未配置 VLM 时图片只在当前浏览器处理</footer>
+    </div>
+    <div class="toast hidden" id="toast"></div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

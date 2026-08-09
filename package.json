@@ -1,0 +1,19 @@
+{
+  "name": "image2diagram",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:single": "node scripts/build-single-file.mjs",
+    "preview": "vite preview",
+    "image2drawio": "node scripts/image2drawio.mjs"
+  },
+  "devDependencies": {
+    "vite": "latest"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
+}
